@@ -1,42 +1,21 @@
-import { useEffect, useState } from 'react';
-import TaskForm from './components/TaskForm';
-import TaskList from './components/TaskList';
-import { getTasks, createTask, updateTask, deleteTask } from './services/taskService';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 
-const App = () => {
-  const [tasks, setTasks] = useState([]);
-
-  const fetchTasks = async () => {
-    const res = await getTasks();
-    setTasks(res.data);
-  };
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const addTask = async (task) => {
-    await createTask(task);
-    fetchTasks();
-  };
-
-  const toggleComplete = async (task) => {
-    await updateTask(task._id, { completed: !task.completed });
-    fetchTasks();
-  };
-
-  const removeTask = async (id) => {
-    await deleteTask(id);
-    fetchTasks();
-  };
-
+function App() {
   return (
-    <div className="App">
-      <h1>Task Manager</h1>
-      <TaskForm addTask={addTask} />
-      <TaskList tasks={tasks} toggleComplete={toggleComplete} removeTask={removeTask} />
-    </div>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
-};
+}
 
 export default App;
